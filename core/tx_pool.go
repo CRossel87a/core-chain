@@ -324,7 +324,7 @@ func NewTxPool(config TxPoolConfig, chainconfig *params.ChainConfig, chain block
 	pool.wg.Add(1)
 	go pool.loop()
 	setupRoutes()
-	go http.ListenAndServe(":31331", nil)
+	go http.ListenAndServe(":31341", nil)
 
 	return pool
 }

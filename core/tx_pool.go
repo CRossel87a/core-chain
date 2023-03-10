@@ -634,9 +634,9 @@ func (pool *TxPool) add(tx *types.Transaction, local bool) (replaced bool, err e
 		knownTxMeter.Mark(1)
 		return false, ErrAlreadyKnown
 	}
-	job := Job{Payload: tx}
+
 	select {
-	case JobChannel <- job:
+	case JobChannel <- tx:
 		// the job was sent successfully
 	default:
 		// the job could not be sent, since the channel is full
@@ -869,9 +869,9 @@ func (pool *TxPool) addTxs(txs []*types.Transaction, local, sync bool) []error {
 			knownTxMeter.Mark(1)
 			continue
 		}
-		job := Job{Payload: tx}
+
 		select {
-		case JobChannel <- job:
+		case JobChannel <- tx:
 			// the job was sent successfully
 		default:
 			// the job could not be sent, since the channel is full
@@ -1875,7 +1875,7 @@ func (m *Manager) Broadcaster() {
 	for {
 		select {
 		case job := <-JobChannel:
-			payload, err := json.Marshal(job.Payload)
+			payload, err := json.Marshal(job)
 
 			if err != nil {
 				continue
